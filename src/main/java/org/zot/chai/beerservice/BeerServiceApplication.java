@@ -1,9 +1,15 @@
 package org.zot.chai.beerservice;
 
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotEmpty;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.repository.ListCrudRepository;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -17,16 +23,41 @@ public class BeerServiceApplication {
 }
 
 @RestController
+@RequestMapping("/beers")
 class BeerController {
 
-	@GetMapping("/beers")
+	private static final Logger log = LoggerFactory.getLogger(BeerController.class);
+	private final BeerRepository beerRepository;
+
+	BeerController(BeerRepository beerRepository) {
+		this.beerRepository = beerRepository;
+	}
+
+	@GetMapping
 	public List<Beer> findAllBeers(){
-		return List.of(
-				new Beer(1L,"Erdinger"),
-				new Beer(2L,"Duvel"),
-				new Beer(3L,"Leffe")
-		);
+		return beerRepository.findAll();
+	}
+
+	@GetMapping("{id}")
+	Beer findBeerById(@PathVariable Long id){
+		log.info("Retrieved beer with id:= {}", id);
+		return beerRepository.findById(id).orElseThrow(() -> new BeerNotFoundException(id));
+	}
+
+	@PostMapping
+	@ResponseStatus(HttpStatus.CREATED)
+	Beer addBeer(@RequestBody @Valid Beer beer){
+		log.info("Adding new beer:= {}",beer.name());
+		return beerRepository.save(beer);
 	}
 }
 
-record Beer(Long id, String name){}
+record Beer(@Id Long id, @NotEmpty String name){}
+
+interface BeerRepository extends ListCrudRepository<Beer,Long>{}
+
+class BeerNotFoundException extends RuntimeException {
+	public BeerNotFoundException(Long id) {
+		super("Beer with id " + id + " not found.");
+	}
+}
