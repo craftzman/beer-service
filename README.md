@@ -4,7 +4,7 @@ Demo new features of spring boot 3
 * Spring Boot Docker compose
 * Spring Boot Test Container
 ## Requirement
-* Java version 17.x.x or higher 
+* Java version 17.x or higher 
 ## Installation
 Use maven to build, install and run
 ### Install
@@ -19,11 +19,11 @@ mvn spring-boot:run
 #### Jar file usage
 After executing maven build command, the jar file can be found under
 ```
-<location>/loan-request-service/target/
+<location>/beer-service/target/
 ```
 Copy to location you desire or just run it directly from target folder
 ```
-java -jar loan-request-service-0.0.1-SNAPSHOT.jar
+java -jar beer-service-0.0.1-SNAPSHOT.jar
 ```
 ### Run from Docker image
 #### image usage
@@ -34,11 +34,11 @@ mvn spring-boot:build-image
 ```
 After the build process is done, then start an application image with this command
 ```
-docker run --rm -p 8080:8080 loan-request-service:0.0.1-SNAPSHOT
+docker run --rm -p 8080:8080 beer-service:0.0.1-SNAPSHOT
 ```
 
 #### Usage
 
-* After the project started the main url is [loan-request-service](http://localhost:8080/)
+* After the project started the main url is [beer-service](http://localhost:8080/)
 
 * Project also provides [swagger page](http://localhost:8080/api/swagger-ui/index.html) here
