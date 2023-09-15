@@ -9,7 +9,7 @@ Demo new features of spring boot 3
 ## Installation
 Use maven to build, install and run
 ### Install
-```bash
+```
 mvn clean install
 ```
 ### Run
