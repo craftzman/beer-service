@@ -1,4 +1,4 @@
-CREATE TABLE beer(
+CREATE TABLE IF NOT EXISTS beer (
     id      BIGSERIAL PRIMARY KEY,
     name    VARCHAR(255) NOT NULL
 );
