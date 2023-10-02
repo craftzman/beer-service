@@ -3,7 +3,7 @@ Demo new features of spring boot 3
 * Spring Data JDBC
 * Spring Boot Docker compose
 * Spring Boot Test Container
-* Flyway
+* ~~Flyway~~
 ## Requirement
 * Java version 17.x or higher 
 ## Installation
