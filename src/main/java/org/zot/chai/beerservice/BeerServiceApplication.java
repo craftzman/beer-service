@@ -23,7 +23,7 @@ public class BeerServiceApplication {
 }
 
 @RestController
-@RequestMapping("/beers")
+@RequestMapping("/api/beers")
 class BeerController {
 
 	private static final Logger log = LoggerFactory.getLogger(BeerController.class);
