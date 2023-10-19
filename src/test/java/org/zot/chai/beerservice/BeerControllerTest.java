@@ -1,5 +1,6 @@
 package org.zot.chai.beerservice;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -10,7 +11,9 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.List;
+import java.util.Optional;
 
+import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
@@ -45,5 +48,13 @@ class BeerControllerTest {
                 .andExpect(content().json(new ObjectMapper().writeValueAsString(beers)));
     }
 
+    @Test
+    void  shouldFoundBeerById() throws Exception {
+        when(beerRepository.findById(anyLong())).thenReturn(Optional.of(beers.get(0)));
+
+        this.mockMvc.perform(get("/api/beers/1"))
+                .andExpect(status().isOk())
+                .andExpect(content().json(new ObjectMapper().writeValueAsString(beers.get(0))));
+    }
 
 }
