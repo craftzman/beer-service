@@ -47,7 +47,7 @@ class BeerControllerTest {
     }
 
     @Test
-    void  shouldFoundBeerById() throws Exception {
+    void shouldFoundBeerById() throws Exception {
         when(beerRepository.findById(anyLong())).thenReturn(Optional.of(beers.get(0)));
 
         this.mockMvc.perform(get("/api/beers/1"))
