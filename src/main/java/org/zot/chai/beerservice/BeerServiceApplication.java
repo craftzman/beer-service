@@ -9,8 +9,12 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.repository.ListCrudRepository;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ProblemDetail;
+import org.springframework.validation.FieldError;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
 
+import java.net.URI;
 import java.util.List;
 
 @SpringBootApplication
@@ -60,4 +64,35 @@ class BeerNotFoundException extends RuntimeException {
 	public BeerNotFoundException(Long id) {
 		super("Beer with id " + id + " not found.");
 	}
+}
+@RestControllerAdvice
+class HttpExceptionHandler {
+
+	@ExceptionHandler(BeerNotFoundException.class)
+	ProblemDetail handleBeerNotFoundException(BeerNotFoundException ex){
+		ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(HttpStatus.NOT_FOUND, ex.getMessage());
+		problemDetail.setDetail("Beer Not Found");
+		problemDetail.setType(URI.create("https://example.net/not-found"));
+		problemDetail.setProperty("severity", "low");
+		return problemDetail;
+	}
+
+	@ExceptionHandler(MethodArgumentNotValidException.class)
+	ProblemDetail handleMethodArgumentNotValidException(MethodArgumentNotValidException ex) {
+		var invalidFields = ex.getBindingResult().getAllErrors().stream()
+				.map(error -> {
+					String name = ((FieldError) error).getField();
+					String reason = error.getDefaultMessage();
+					return new InvalidField(name, reason);
+				})
+				.toList();
+
+		ProblemDetail problemDetail = ProblemDetail.forStatus(HttpStatus.BAD_REQUEST);
+		problemDetail.setTitle("Input data not valid");
+		problemDetail.setType(URI.create("https://example.net/validation-error"));
+		problemDetail.setProperty("invalid-fields", invalidFields);
+		return problemDetail;
+	}
+
+	record InvalidField(String name, String reason) {}
 }
