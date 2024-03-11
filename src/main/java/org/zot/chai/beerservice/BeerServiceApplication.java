@@ -10,6 +10,7 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.repository.ListCrudRepository;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ProblemDetail;
+import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
@@ -53,6 +54,13 @@ class BeerController {
 	Beer addBeer(@RequestBody @Valid Beer beer){
 		log.info("Adding new beer:= {}",beer.name());
 		return beerRepository.save(beer);
+	}
+
+	@DeleteMapping("{id}")
+	ResponseEntity deleteBeer(@PathVariable Long id){
+		log.info("Deleting Beer id:= {}", id);
+		beerRepository.deleteById(id);
+		return ResponseEntity.ok().build();
 	}
 }
 
